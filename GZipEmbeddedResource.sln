@@ -8,11 +8,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GZipEmbeddedResource.Test",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3854296F-DE4E-4FBB-8B6B-77244ECBD686}"
 	ProjectSection(SolutionItems) = preProject
-		src\Common.props = src\Common.props
+		src\Project.Output.Common.props = src\Project.Output.Common.props
 		src\Directory.Build.props = src\Directory.Build.props
 		src\Project.Output.Executable.props = src\Project.Output.Executable.props
 		src\Project.Output.Library.props = src\Project.Output.Library.props
-		src\Project.Output.RelativePath.props = src\Project.Output.RelativePath.props
 		src\Project.Output.Test.props = src\Project.Output.Test.props
 	EndProjectSection
 EndProject

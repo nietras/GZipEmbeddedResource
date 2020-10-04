@@ -9,6 +9,7 @@ namespace GZipEmbeddedResource.Test
         public void EmbeddedResourcesTest_enwik8()
         {   
             var text = EmbeddedResources.enwik8;
+
             Assert.IsNotNull(text);
             Assert.AreEqual(100749908, text.Length);
             Assert.IsTrue(text.StartsWith(@"<mediawiki xmlns="));
