@@ -3,7 +3,7 @@
        The Directory.Build.props way of doing this would have to be replicated in multiple places,
        so instead using the old props customization trick but define it before Sdk.props. -->
   <Import Project="../Project.Output.Library.props" />
-  
+
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
 
   <PropertyGroup>
@@ -17,54 +17,57 @@
 
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 
-  <UsingTask TaskName="GZip" 
-             TaskFactory="RoslynCodeTaskFactory" 
+  <UsingTask TaskName="GZip"
+             TaskFactory="RoslynCodeTaskFactory"
              AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
     <ParameterGroup>
-      <Files ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
-      <Result ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true" />
+      <Files ParameterType="Microsoft.Build.Framework.ITaskItem[]"
+             Required="true" />
+      <Result ParameterType="Microsoft.Build.Framework.ITaskItem[]"
+              Output="true" />
     </ParameterGroup>
     <Task>
       <Using Namespace="System.IO" />
       <Using Namespace="System.IO.Compression" />
       <Code Type="Fragment" Language="cs">
         <![CDATA[
-          if (Files.Length > 0)
-          {
-              Result = new TaskItem[Files.Length];
-              for (int i = 0; i < Files.Length; i++)
-              {
-                  ITaskItem item = Files[i];
-                  string sourcePath = item.GetMetadata("FullPath");
-                  string sourceItemSpec = item.ItemSpec;
+    if (Files.Length > 0)
+    {
+        Result = new TaskItem[Files.Length];
+        for (int i = 0; i < Files.Length; i++)
+        {
+            ITaskItem item = Files[i];
+            string sourcePath = item.GetMetadata("FullPath");
+            string sourceItemSpec = item.ItemSpec;
                   
-                  var destinationSuffix = ".gz";
-                  string destinationPath = sourcePath + destinationSuffix;
-                  string destinationItemSpec = sourceItemSpec + destinationSuffix;
+            string destinationSuffix = ".gz";
+            string destinationPath = sourcePath + destinationSuffix;
+            string destinationItemSpec = sourceItemSpec + destinationSuffix;
 
-                  Log.LogMessage(MessageImportance.Normal, 
-                      "EmbeddedResource Src : " + item.ItemSpec);
+            Log.LogMessage(MessageImportance.Normal, 
+                "EmbeddedResource Src : " + sourceItemSpec);
                   
-                  using (var sourceStream = File.OpenRead(sourcePath))
-                  using (var destinationStream = File.OpenWrite(destinationPath))
-                  using (var destinationGZip = new GZipStream(destinationStream, 
-                    CompressionLevel.Optimal))
-                  {
-                      sourceStream.CopyTo(destinationGZip);
-                  }
+            using (var sourceStream = File.OpenRead(sourcePath))
+            using (var destinationStream = File.OpenWrite(destinationPath))
+            using (var destinationGZip = new GZipStream(destinationStream, 
+              CompressionLevel.Optimal))
+            {
+                sourceStream.CopyTo(destinationGZip);
+            }
                   
-                  var destinationItem = new TaskItem(destinationItemSpec);
-                  Log.LogMessage(MessageImportance.Normal, 
-                      "EmbeddedResource GZip: " + destinationItem.ItemSpec);
+            var destinationItem = new TaskItem(destinationItemSpec);
+            
+            Log.LogMessage(MessageImportance.Normal, 
+                "EmbeddedResource GZip: " + destinationItem.ItemSpec);
                   
-                  Result[i] = destinationItem;
-              }
-          }
-        ]]>
+            Result[i] = destinationItem;
+        }
+    }
+  ]]>
       </Code>
     </Task>
   </UsingTask>
-  
+
   <Target Name="BeforeBuild">
     <GZip Files="@(EmbeddedResource)">
       <Output ItemName="GZipEmbeddedResource" TaskParameter="Result" />
