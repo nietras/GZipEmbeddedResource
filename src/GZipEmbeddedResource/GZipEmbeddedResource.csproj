@@ -1,7 +1,7 @@
 ﻿<Project>
   <!-- Custom properties need to be included before the Sdk.props 
        The Directory.Build.props way of doing this would have to be replicated in multiple places,
-       so for now we use the old customization trick but define it before Sdk.props. -->
+       so instead using the old props customization trick but define it before Sdk.props. -->
   <Import Project="../Project.Output.Library.props" />
   
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
@@ -29,38 +29,38 @@
       <Using Namespace="System.IO.Compression" />
       <Code Type="Fragment" Language="cs">
         <![CDATA[
-            if (Files.Length > 0)
-            {
-                Result = new TaskItem[Files.Length];
-                for (int i = 0; i < Files.Length; i++)
-                {
-                    ITaskItem item = Files[i];
-                    string sourcePath = item.GetMetadata("FullPath");
-                    string sourceItemSpec = item.ItemSpec;
-                    
-                    var destinationSuffix = ".gz";
-                    string destinationPath = sourcePath + destinationSuffix;
-                    string destinationItemSpec = sourceItemSpec + destinationSuffix;
+          if (Files.Length > 0)
+          {
+              Result = new TaskItem[Files.Length];
+              for (int i = 0; i < Files.Length; i++)
+              {
+                  ITaskItem item = Files[i];
+                  string sourcePath = item.GetMetadata("FullPath");
+                  string sourceItemSpec = item.ItemSpec;
+                  
+                  var destinationSuffix = ".gz";
+                  string destinationPath = sourcePath + destinationSuffix;
+                  string destinationItemSpec = sourceItemSpec + destinationSuffix;
 
-                    Log.LogMessage(MessageImportance.Normal, 
+                  Log.LogMessage(MessageImportance.Normal, 
                       "EmbeddedResource Src : " + item.ItemSpec);
-                    
-                    using (var sourceStream = File.OpenRead(sourcePath))
-                    using (var destinationStream = File.OpenWrite(destinationPath))
-                    using (var destinationGZip = new GZipStream(destinationStream, 
-                      CompressionLevel.Optimal))
-                    {
-                        sourceStream.CopyTo(destinationGZip);
-                    }
-                    
-                    var destinationItem = new TaskItem(destinationItemSpec);
-                    Log.LogMessage(MessageImportance.Normal, 
+                  
+                  using (var sourceStream = File.OpenRead(sourcePath))
+                  using (var destinationStream = File.OpenWrite(destinationPath))
+                  using (var destinationGZip = new GZipStream(destinationStream, 
+                    CompressionLevel.Optimal))
+                  {
+                      sourceStream.CopyTo(destinationGZip);
+                  }
+                  
+                  var destinationItem = new TaskItem(destinationItemSpec);
+                  Log.LogMessage(MessageImportance.Normal, 
                       "EmbeddedResource GZip: " + destinationItem.ItemSpec);
-                    
-                    Result[i] = destinationItem;
-                }
-            }
-]]>
+                  
+                  Result[i] = destinationItem;
+              }
+          }
+        ]]>
       </Code>
     </Task>
   </UsingTask>

@@ -1,7 +1,7 @@
 <Project>
   <!-- Custom properties need to be included before the Sdk.props 
        The Directory.Build.props way of doing this would have to be replicated in multiple places,
-       so for now we use the old customization trick but define it before Sdk.props. -->
+       so instead using the old props customization trick but define it before Sdk.props. -->
   <Import Project="../Project.Output.Test.props" />
 
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
