@@ -1,11 +1,30 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GZipEmbeddedResource", "GZipEmbeddedResource\GZipEmbeddedResource.csproj", "{E7055F9B-9081-4A46-9740-21247F75F18B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GZipEmbeddedResource", "src\GZipEmbeddedResource\GZipEmbeddedResource.csproj", "{E7055F9B-9081-4A46-9740-21247F75F18B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GZipEmbeddedResource.Test", "GZipEmbeddedResource.Test\GZipEmbeddedResource.Test.csproj", "{A7F24EE1-195C-4A76-89DA-0048F73AAD07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GZipEmbeddedResource.Test", "src\GZipEmbeddedResource.Test\GZipEmbeddedResource.Test.csproj", "{A7F24EE1-195C-4A76-89DA-0048F73AAD07}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3854296F-DE4E-4FBB-8B6B-77244ECBD686}"
+	ProjectSection(SolutionItems) = preProject
+		src\Common.props = src\Common.props
+		src\Directory.Build.props = src\Directory.Build.props
+		src\Project.Output.Executable.props = src\Project.Output.Executable.props
+		src\Project.Output.Library.props = src\Project.Output.Library.props
+		src\Project.Output.RelativePath.props = src\Project.Output.RelativePath.props
+		src\Project.Output.Test.props = src\Project.Output.Test.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{6F41B76D-31AE-4712-B17E-7BBAE780F2D5}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		global.json = global.json
+		LICENSE = LICENSE
+		rename.ps1 = rename.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
