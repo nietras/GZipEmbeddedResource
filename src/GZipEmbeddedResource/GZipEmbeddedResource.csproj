@@ -1,0 +1,80 @@
+﻿<Project>
+  <!-- Custom properties need to be included before the Sdk.props 
+       The Directory.Build.props way of doing this would have to be replicated in multiple places,
+       so instead using the old props customization trick but define it before Sdk.props. -->
+  <Import Project="../Project.Output.Library.props" />
+  
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Test file from: http://mattmahoney.net/dc/textdata.html -->
+    <EmbeddedResource Include="enwik8" />
+  </ItemGroup>
+
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+
+  <UsingTask TaskName="GZip" 
+             TaskFactory="RoslynCodeTaskFactory" 
+             AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Files ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <Result ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.IO.Compression" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+          if (Files.Length > 0)
+          {
+              Result = new TaskItem[Files.Length];
+              for (int i = 0; i < Files.Length; i++)
+              {
+                  ITaskItem item = Files[i];
+                  string sourcePath = item.GetMetadata("FullPath");
+                  string sourceItemSpec = item.ItemSpec;
+                  
+                  var destinationSuffix = ".gz";
+                  string destinationPath = sourcePath + destinationSuffix;
+                  string destinationItemSpec = sourceItemSpec + destinationSuffix;
+
+                  Log.LogMessage(MessageImportance.Normal, 
+                      "EmbeddedResource Src : " + item.ItemSpec);
+                  
+                  using (var sourceStream = File.OpenRead(sourcePath))
+                  using (var destinationStream = File.OpenWrite(destinationPath))
+                  using (var destinationGZip = new GZipStream(destinationStream, 
+                    CompressionLevel.Optimal))
+                  {
+                      sourceStream.CopyTo(destinationGZip);
+                  }
+                  
+                  var destinationItem = new TaskItem(destinationItemSpec);
+                  Log.LogMessage(MessageImportance.Normal, 
+                      "EmbeddedResource GZip: " + destinationItem.ItemSpec);
+                  
+                  Result[i] = destinationItem;
+              }
+          }
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+  
+  <Target Name="BeforeBuild">
+    <GZip Files="@(EmbeddedResource)">
+      <Output ItemName="GZipEmbeddedResource" TaskParameter="Result" />
+    </GZip>
+    <Message Text="Source EmbeddedResources: @(EmbeddedResource)" Importance="High" />
+    <Message Text="GZipped EmbeddedResources: @(GZipEmbeddedResource)" Importance="High" />
+    <ItemGroup>
+      <EmbeddedResource Remove="@(EmbeddedResource)" />
+      <EmbeddedResource Include="@(GZipEmbeddedResource)" />
+    </ItemGroup>
+  </Target>
+
+</Project>
