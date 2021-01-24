@@ -80,4 +80,13 @@
     </ItemGroup>
   </Target>
 
+  <!-- Change logical name of all embedded resources to be like file system paths. -->
+  <Target Name="ModifyEmbeddedResourceNames" BeforeTargets="CreateManifestResourceNames">
+    <ItemGroup>
+      <EmbeddedResource>
+        <LogicalName>$([System.String]::new('%(EmbeddedResource.Identity)').Replace('\','/'))</LogicalName>
+      </EmbeddedResource>
+    </ItemGroup>
+  </Target>
+
 </Project>
